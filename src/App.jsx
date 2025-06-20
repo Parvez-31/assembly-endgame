@@ -1,17 +1,32 @@
+import { useState } from "react";
 import { languages } from "./utils/languages";
 
 const App = () => {
+  const [currentWord, setCurrentWord] = useState("react");
+  const [guessLetter, setGuessLetter] = useState([]);
+  console.log(guessLetter);
+
+  // handler Fn
+  const handleGuess = (word) => {
+    setGuessLetter((prevWord) =>
+      prevWord.includes(word) ? prevWord : [...prevWord, word]
+    );
+  };
+
   /**
-   * Goal: Build out the main parts of our app
+   * Goal: Allow the user to start guessing the letters
    *
-   * Challenge: Create the language chips. Use the
-   * `languages.js` file to pull in the array of
-   * languages to use, which contains the language
-   * name, background color, and text color.
+   * Challenge: Update the keyboard when a letter is right
+   * or wrong.
    *
-   * Hint for layout: use a flex container that can wrap
-   * to layout the languages.
+   * Bonus: use the `clsx` package to easily add conditional
+   * classNames to the keys of the keyboard. Check the docs
+   * to learn how to use it 📖
    */
+
+  const alphabet = "abcdefghijklmnopqrstuvwxyz";
+  const letterElement = currentWord.split("");
+
   return (
     <>
       <main>
@@ -44,6 +59,24 @@ const App = () => {
             );
           })}
         </section>
+
+        <section className="word">
+          {letterElement.map((word, index) => {
+            return <span key={index}>{word.toUpperCase()}</span>;
+          })}
+        </section>
+
+        <section className="keyboard">
+          {alphabet.split("").map((word, index) => {
+            return (
+              <button onClick={() => handleGuess(word)} key={word}>
+                {word}
+              </button>
+            );
+          })}
+        </section>
+
+        <button className="new-game">New Game</button>
       </main>
     </>
   );

@@ -57,9 +57,67 @@ section.language-chips {
   gap: 5px;
   justify-content: center;
   max-width: 350px;
+  margin-bottom: 36px;
 }
 
 span.chip {
   border-radius: 3px;
   padding: 4.5px;
+}
+
+/* currentWord */
+
+section.word {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 36px;
+
+  /* align-items: center; */
+}
+
+section.word > span {
+  height: 40px;
+  width: 40px;
+  background-color: #323232;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 2px solid white;
+  font-size: 1.125rem;
+}
+
+/* keyboard */
+section.keyboard {
+  max-width: 350px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+  margin-bottom: 36px;
+}
+
+section.keyboard > button {
+  height: 30px;
+  width: 30px;
+  background-color: yellow;
+  border: none;
+  border: 1px solid white;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+/* new-button */
+
+button.new-game {
+  background-color: #11b5e5;
+  border: 1px solid #d7d7d7;
+  border-radius: 4px;
+  width: 225px;
+  height: 40px;
+  padding: 6px 12px;
+  display: block;
+  margin-inline: auto;
+  cursor: pointer;
 }
