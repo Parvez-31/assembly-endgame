@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { languages } from "./utils/languages";
+import { clsx } from "clsx";
 
 const App = () => {
   const [currentWord, setCurrentWord] = useState("react");
   const [guessLetter, setGuessLetter] = useState([]);
-  console.log(guessLetter);
+  // console.log(guessLetter);
 
   // handler Fn
   const handleGuess = (word) => {
@@ -16,12 +17,8 @@ const App = () => {
   /**
    * Goal: Allow the user to start guessing the letters
    *
-   * Challenge: Update the keyboard when a letter is right
-   * or wrong.
-   *
-   * Bonus: use the `clsx` package to easily add conditional
-   * classNames to the keys of the keyboard. Check the docs
-   * to learn how to use it 📖
+   * Challenge: Only display the correctly-guessed letters
+   * in the word
    */
 
   const alphabet = "abcdefghijklmnopqrstuvwxyz";
@@ -62,14 +59,31 @@ const App = () => {
 
         <section className="word">
           {letterElement.map((word, index) => {
-            return <span key={index}>{word.toUpperCase()}</span>;
+            return (
+              <span key={index}>
+                {guessLetter.includes(word) ? word.toUpperCase() : ""}
+              </span>
+            );
           })}
         </section>
 
         <section className="keyboard">
           {alphabet.split("").map((word, index) => {
+            const isGuessed = guessLetter.includes(word);
+            const isCorrect = isGuessed && currentWord.includes(word);
+            const isWrong = isGuessed && !currentWord.includes(word);
+
+            const className = clsx({
+              correct: isCorrect,
+              wrong: isWrong,
+            });
+
             return (
-              <button onClick={() => handleGuess(word)} key={word}>
+              <button
+                className={className}
+                onClick={() => handleGuess(word)}
+                key={word}
+              >
                 {word}
               </button>
             );
