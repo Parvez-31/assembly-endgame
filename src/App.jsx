@@ -3,24 +3,41 @@ import { languages } from "./utils/languages";
 import { clsx } from "clsx";
 
 const App = () => {
+  //state value
   const [currentWord, setCurrentWord] = useState("react");
   const [guessLetter, setGuessLetter] = useState([]);
-  // console.log(guessLetter);
 
+  //drived value
+  const wrongGuessCount = guessLetter.filter(
+    (letter) => !currentWord.includes(letter)
+  ).length;
+
+  const isGamewon = currentWord
+    .split("")
+    .every((letter) => guessLetter.includes(letter));
+  console.log(isGamewon);
+  const isGameLost = wrongGuessCount >= languages.length;
+  const isGameOver = isGamewon || isGameLost;
   // handler Fn
   const handleGuess = (word) => {
     setGuessLetter((prevWord) =>
       prevWord.includes(word) ? prevWord : [...prevWord, word]
     );
   };
-
   /**
-   * Goal: Allow the user to start guessing the letters
+   * Goal: Add in the incorrect guesses mechanism to the game
    *
-   * Challenge: Only display the correctly-guessed letters
-   * in the word
+   * Challenge:
+   * Conditionally render either the "won" or "lost" statuses
+   * from the design, both the text and the styles, based on the
+   * new derived variables.
+   *
+   * Note: We always want the surrounding `section` to be rendered,
+   * so only change the content inside that section. Otherwise the
+   * content on the page would jump around a bit too much.
    */
 
+  //static value
   const alphabet = "abcdefghijklmnopqrstuvwxyz";
   const letterElement = currentWord.split("");
 
@@ -36,19 +53,22 @@ const App = () => {
         </header>
 
         <section className="game-status">
-          <h2>You Win!</h2>
+          {isGameLost ? <h2>Game Over</h2> : <h2>You Win!</h2>}
           <p>Well done!🎉</p>
         </section>
 
         <section className="language-chips">
           {languages.map((lang, index) => {
+            const className = clsx("chips", {
+              lost: index < wrongGuessCount,
+            });
             return (
               <span
                 style={{
                   backgroundColor: lang.backgroundColor,
                   color: lang.color,
                 }}
-                className="chip"
+                className={className}
                 key={lang.name}
               >
                 {lang.name}
@@ -90,7 +110,7 @@ const App = () => {
           })}
         </section>
 
-        <button className="new-game">New Game</button>
+        {isGameOver && <button className="new-game">New Game</button>}
       </main>
     </>
   );
