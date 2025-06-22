@@ -18,6 +18,7 @@ const App = () => {
   console.log(isGamewon);
   const isGameLost = wrongGuessCount >= languages.length;
   const isGameOver = isGamewon || isGameLost;
+
   // handler Fn
   const handleGuess = (word) => {
     setGuessLetter((prevWord) =>
@@ -25,21 +26,45 @@ const App = () => {
     );
   };
   /**
-   * Goal: Add in the incorrect guesses mechanism to the game
+   * Backlog:
    *
-   * Challenge:
-   * Conditionally render either the "won" or "lost" statuses
-   * from the design, both the text and the styles, based on the
-   * new derived variables.
-   *
-   * Note: We always want the surrounding `section` to be rendered,
-   * so only change the content inside that section. Otherwise the
-   * content on the page would jump around a bit too much.
+   * - Farewell messages in status section
+   * - Fix a11y issues
+   * - Make the new game button work
+   * - Choose a random word from a list of words
+   * - Confetti drop when the user wins
    */
 
   //static value
   const alphabet = "abcdefghijklmnopqrstuvwxyz";
   const letterElement = currentWord.split("");
+
+  const gameStatusClass = clsx("game-status", {
+    won: isGamewon,
+    lost: isGameLost,
+  });
+
+  const randerGameStatus = () => {
+    if (isGameOver) {
+      if (isGamewon) {
+        return (
+          <>
+            <h2>You win!</h2>
+            <p>Well done! 🎉</p>
+          </>
+        );
+      } else {
+        return (
+          <>
+            <h2>Game over!</h2>
+            <p>You lose! Better start learning Assembly 😭</p>
+          </>
+        );
+      }
+    } else {
+      return null;
+    }
+  };
 
   return (
     <>
@@ -52,10 +77,7 @@ const App = () => {
           </p>
         </header>
 
-        <section className="game-status">
-          {isGameLost ? <h2>Game Over</h2> : <h2>You Win!</h2>}
-          <p>Well done!🎉</p>
-        </section>
+        <section className={gameStatusClass}>{randerGameStatus()}</section>
 
         <section className="language-chips">
           {languages.map((lang, index) => {
