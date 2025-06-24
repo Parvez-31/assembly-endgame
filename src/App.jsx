@@ -1,29 +1,31 @@
 import { useState } from "react";
 import { languages } from "./utils/languages";
-import { getFarewellText } from "./utils/farewell";
+import { getFarewellText, getRandomWord } from "./utils/farewell";
+import Confetti from "react-confetti";
 import { clsx } from "clsx";
 
 const App = () => {
   //state value
-  const [currentWord, setCurrentWord] = useState("react");
+  const [currentWord, setCurrentWord] = useState(() => getRandomWord());
+  console.log(currentWord);
+
   const [guessLetter, setGuessLetter] = useState([]);
 
   //drived value
   const wrongGuessCount = guessLetter.filter(
     (letter) => !currentWord.includes(letter)
   ).length;
-  console.log(wrongGuessCount);
 
   const isGameWon = currentWord
     .split("")
+
     .every((letter) => guessLetter.includes(letter));
 
-  const isGameLost = wrongGuessCount >= languages.length;
+  const isGameLost = wrongGuessCount >= languages.length - 1;
   const isGameOver = isGameWon || isGameLost;
   const lastGuessedLetter = guessLetter[guessLetter.length - 1];
   const isLastGuessIncorrect =
     lastGuessedLetter && !currentWord.includes(lastGuessedLetter);
-  console.log(isLastGuessIncorrect);
 
   // handler Fn
   const handleGuess = (word) => {
@@ -31,17 +33,26 @@ const App = () => {
       prevWord.includes(word) ? prevWord : [...prevWord, word]
     );
   };
-  /**
-   * Challenge: Bid farewell to each programming language
-   * as it gets erased from existance 👋😭
-   *
-   * Use the `getFarewellText` function from the new utils.js
-   * file to generate the text.
-   *
-   * Check hint.md if you're feeling stuck, but do your best
-   * to solve the challenge without the hint! 🕵️
-   */
 
+  const resetGame = () => {
+    setCurrentWord(getRandomWord());
+    setGuessLetter([]);
+  };
+  /**
+   * Backlog:
+   *
+   * ✅ Farewell messages in status section
+   * ✅ Disable the keyboard when the game is over
+   * ✅ Fix a11y issues
+   * ✅ Choose a random word from a list of words
+   * ✅ Make the New Game button reset the game
+   * - Reveal what the word was if the user loses the game
+   * - Confetti drop when the user wins
+   *
+   * Challenge: Reveal the missing letters of the word if the user
+   * loses the game. Style the missing letters to have the same red
+   * color as the wrong letter keys.
+   */
   //static value
   const alphabet = "abcdefghijklmnopqrstuvwxyz";
   const letterElement = currentWord.split("");
@@ -64,6 +75,7 @@ const App = () => {
     if (isGameWon) {
       return (
         <>
+          <Confetti />
           <h2>You win!</h2>
           <p>Well done! 🎉</p>
         </>
@@ -115,9 +127,17 @@ const App = () => {
 
         <section className="word">
           {letterElement.map((word, index) => {
+            const isGussed = guessLetter.includes(word);
+            const isMissing = !isGussed && isGameOver;
+
             return (
-              <span key={index}>
-                {guessLetter.includes(word) ? word.toUpperCase() : ""}
+              <span
+                key={index}
+                className={clsx("letter", {
+                  wrong: isMissing,
+                })}
+              >
+                {isGussed || isMissing ? word.toUpperCase() : ""}
               </span>
             );
           })}
@@ -148,7 +168,11 @@ const App = () => {
           })}
         </section>
 
-        {isGameOver && <button className="new-game">New Game</button>}
+        {isGameOver && (
+          <button onClick={resetGame} className="new-game">
+            New Game
+          </button>
+        )}
       </main>
     </>
   );
